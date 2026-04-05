@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matt.Himself</title>
+<script src="https://unpkg.com/@leonardosnt/lanyard.js@1.0.1/dist/lanyard.min.js"></script>
+
+<style>
+/* ===== BASE & ENTRY OVERLAY ===== */
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: #05070a;
+  color: #ffffff;
+  overflow: hidden; /* Lock scroll until entered */
+}
+
+#entry-overlay {
+  position: fixed;
+  inset: 0;
+  background: #05070a;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.8s ease, visibility 0.8s;
+}
+
+#entry-button {
+  background: none;
+  border: 1px solid #4a70ff;
+  color: #4a70ff;
+  padding: 15px 40px;
+  font-size: 14px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: 0.3s;
+}
+
+#entry-button:hover {
+  background: rgba(74, 112, 255, 0.1);
+  box-shadow: 0 0 20px rgba(74, 112, 255, 0.3);
+}
+
+.main-content {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: 1s ease;
+  pointer-events: none;
+}
+
+body.entered .main-content {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+body.entered { overflow-y: auto; }
+
+/* ===== BENTO GRID ===== */
+.container {
+  display: grid;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px;
+  gap: 20px;
+  grid-template-columns: 1fr 1fr 1.2fr;
+  grid-template-areas: 
+    "profile profile software"
+    "connect status projects"
+    "mindset works discord";
+}
+
+/* ===== CARD & MOBILE HOVER ===== */
+.card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  padding: 25px;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+  /* Touch support for mobile hover */
+  -webkit-tap-highlight-color: transparent;
+}
+
+.card:hover, .card:active {
+  transform: translateY(-5px);
+  border-color: rgba(74, 112, 255, 0.4);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* ===== TYPOGRAPHY ===== */
+h3 {
+  font-size: 13px; /* Matched to software tags */
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #4a70ff;
+  margin-bottom: 20px;
+  margin-top: 0;
+}
+
+h1 { margin: 0; font-size: 38px; }
+
+/* ===== WORK STATUS LIST ===== */
+.status-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.status-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.available { color: #00ffa6; font-weight: bold; text-transform: uppercase; font-size: 10px; position: relative; }
+.not-available { color: #ff4a4a; font-weight: bold; text-transform: uppercase; font-size: 10px; }
+
+/* Pulse Glow for Available */
+.pulse-glow {
+  animation: pulse-green 2s infinite;
+}
+
+@keyframes pulse-green {
+  0% { text-shadow: 0 0 0px rgba(0, 255, 166, 0); }
+  50% { text-shadow: 0 0 10px rgba(0, 255, 166, 0.8); }
+  100% { text-shadow: 0 0 0px rgba(0, 255, 166, 0); }
+}
+
+/* ===== SOFTWARE SCROLL ===== */
+.tags-wrapper { overflow: hidden; mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent); }
+.tags { display: flex; gap: 10px; width: max-content; animation: scroll 10s linear infinite; }
+.tag { padding: 6px 14px; border-radius: 10px; background: rgba(255,255,255,0.05); font-size: 13px; white-space: nowrap; }
+
+@keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* ===== DISCORD LANYARD ===== */
+.discord-card { grid-area: discord; display: flex; align-items: center; gap: 15px; }
+.discord-avatar { width: 50px; height: 50px; border-radius: 50%; background: #222; position: relative; }
+.discord-dot { 
+    position: absolute; bottom: 2px; right: 2px; width: 12px; height: 12px; 
+    border-radius: 50%; border: 2px solid #05070a; background: #747f8d; 
+}
+
+/* Mobile Adjustments */
+@media (max-width: 900px) {
+  .container { grid-template-columns: 1fr 1fr; grid-template-areas: "profile profile" "software software" "connect status" "projects projects" "mindset works" "discord discord"; }
+}
+@media (max-width: 600px) {
+  .container { grid-template-columns: 1fr; grid-template-areas: "profile" "software" "status" "projects" "connect" "mindset" "works" "discord"; }
+}
+
+</style>
+</head>
+<body>
+
+<div id="entry-overlay">
+  <button id="entry-button" onclick="enterSite()">Click to Enter</button>
+</div>
+
+<div class="main-content">
+  <div class="container">
+    
+    <div class="card profile">
+      <h3>Designer & Developer</h3>
+      <h1>Matt.Himself</h1>
+      <p style="opacity: 0.6; margin-top: 15px;">Crafting polished digital experiences. Consistently rated 5★ by clients.</p>
+    </div>
+
+    <div class="card software">
+      <h3>Softwares Used</h3>
+      <div class="tags-wrapper">
+        <div class="tags">
+          <div class="tag">After Effects</div><div class="tag">Premiere Pro</div>
+          <div class="tag">Figma</div><div class="tag">VS Code</div>
+          <div class="tag">Node.js</div><div class="tag">Python</div>
+          <div class="tag">After Effects</div><div class="tag">Premiere Pro</div>
+          <div class="tag">Figma</div><div class="tag">VS Code</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card status">
+      <h3>Work Status</h3>
+      <div class="status-list">
+        <div class="status-item"><span>Discord Bots</span> <span class="not-available">Not Available</span></div>
+        <div class="status-item"><span>Minecraft Mods</span> <span class="available pulse-glow">Available</span></div>
+        <div class="status-item"><span>Websites</span> <span class="available pulse-glow">Available</span></div>
+        <div class="status-item"><span>ER:LC Assets</span> <span class="available pulse-glow">Available</span></div>
+      </div>
+    </div>
+
+    <div class="card discord-card">
+      <div class="discord-avatar" id="discord-avatar">
+        <div class="discord-dot" id="discord-status"></div>
+      </div>
+      <div>
+        <h3 style="margin-bottom: 5px;">Discord</h3>
+        <div id="discord-name" style="font-weight: bold;">Loading...</div>
+      </div>
+    </div>
+
+    <div class="card connect">
+      <h3>Connect</h3>
+      <p>Commissions →</p>
+      <p>Big Sky Roleplay →</p>
+    </div>
+
+    <div class="card projects">
+      <h3>Recent Projects</h3>
+      <h2 style="font-size: 40px; margin: 0;">200+</h2>
+    </div>
+
+    <div class="card mindset">
+      <h3>Mindset</h3>
+      <p style="font-style: italic; font-size: 14px; color: #4a70ff;">"Your future is created by what you do today."</p>
+    </div>
+
+    <div class="card works">
+      <h3>Works</h3>
+      <h1 style="font-size: 24px;">PORTFOLIO</h1>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// 1. Enter Button Logic
+function enterSite() {
+  document.body.classList.add('entered');
+  document.getElementById('entry-overlay').style.opacity = '0';
+  setTimeout(() => {
+    document.getElementById('entry-overlay').style.visibility = 'hidden';
+  }, 800);
+}
+
+// 2. Animating Title
+let baseTitle = "Matt.Himself ";
+setInterval(() => {
+  baseTitle = baseTitle.substring(1) + baseTitle.substring(0, 1);
+  document.title = baseTitle;
+}, 200);
+
+// 3. Lanyard Discord Integration
+// Replace 'YOUR_DISCORD_ID' with your actual numerical Discord ID
+const DISCORD_ID = 'YOUR_DISCORD_ID'; 
+
+lanyard({
+  userId: DISCORD_ID,
+  socket: true,
+  onPresenceUpdate: data => {
+    const statusDot = document.getElementById('discord-status');
+    const nameText = document.getElementById('discord-name');
+    const avatarImg = document.getElementById('discord-avatar');
+    
+    // Set Name
+    nameText.innerText = data.discord_user.username;
+    
+    // Set Avatar
+    avatarImg.style.backgroundImage = `url(https://cdn.discordapp.com/avatars/${data.discord_user.id}/${data.discord_user.avatar}.png)`;
+    avatarImg.style.backgroundSize = 'cover';
+
+    // Set Status Color
+    const colors = { online: '#43b581', idle: '#faa61a', dnd: '#f04747', offline: '#747f8d' };
+    statusDot.style.background = colors[data.discord_status] || colors.offline;
+  }
+});
+</script>
+
+</body>
+</html>
