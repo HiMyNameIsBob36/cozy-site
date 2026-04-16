@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Starry Night</title>
+    <style>
+        /* Basic Dark Mode Setup */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0a0a0c;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* Prevents scrollbars from stars near edges */
+        }
+
+        /* The Content */
+        .content {
+            z-index: 10;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Star Styling */
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="content">
+        <h1>Hello, Universe.</h1>
+        <p>Refresh the page to reposition the stars.</p>
+    </div>
+
+    <script>
+        // Function to create stars
+        function createStars() {
+            const starCount = 150; // Adjust for more or fewer stars
+            const body = document.body;
+
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                
+                // Random size (1px to 3px)
+                const size = Math.random() * 3 + 'px';
+                star.style.width = size;
+                star.style.height = size;
+
+                // Random position
+                star.style.top = Math.random() * 100 + 'vh';
+                star.style.left = Math.random() * 100 + 'vw';
+
+                // Random slight opacity for depth
+                star.style.opacity = Math.random();
+
+                body.appendChild(star);
+            }
+        }
+
+        // Run the function on load
+        createStars();
+    </script>
+</body>
+</html>
