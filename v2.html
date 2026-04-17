@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deep Space</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            /* Radial gradient gives the background depth */
+            background: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%);
+            color: white;
+            font-family: 'Inter', system-ui, sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .content {
+            z-index: 10;
+            text-align: center;
+            pointer-events: none; /* Let clicks pass through to background if needed */
+        }
+
+        h1 { font-weight: 300; letter-spacing: 5px; text-transform: uppercase; }
+
+        /* Base Star Style */
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        /* Shooting Star Style */
+        .shooting-star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
+            border-radius: 50%;
+            transform: rotate(-45deg);
+            pointer-events: none;
+            animation: shoot 3s linear infinite;
+        }
+
+        @keyframes shoot {
+            0% { transform: translateX(0) translateY(0) rotate(-45deg) scale(0); opacity: 1; }
+            10% { scale(1); }
+            20% { transform: translateX(-500px) translateY(500px) rotate(-45deg) scale(1); opacity: 0; }
+            100% { transform: translateX(-500px) translateY(500px) rotate(-45deg) scale(0); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="content">
+        <h1>Cosmos</h1>
+        <p style="opacity: 0.6;">Watch for shooting stars.</p>
+    </div>
+
+    <script>
+        const starCount = 200;
+        const colors = ['#ffffff', '#ffffff', '#ffe9c4', '#d4fbff', '#ffd4d4']; // Mostly white, some gold, blue, pink
+
+        function createGalaxy() {
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                
+                const size = Math.random() * 2.5 + 'px';
+                star.style.width = size;
+                star.style.height = size;
+                
+                star.style.top = Math.random() * 100 + 'vh';
+                star.style.left = Math.random() * 100 + 'vw';
+                
+                // Assign random color from our array
+                star.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                star.style.opacity = Math.random() * 0.8 + 0.2;
+
+                document.body.appendChild(star);
+            }
+        }
+
+        function spawnShootingStar() {
+            const shooter = document.createElement('div');
+            shooter.className = 'shooting-star';
+            
+            // Random start position on the right/top side
+            shooter.style.top = Math.random() * 50 + 'vh';
+            shooter.style.left = (Math.random() * 50 + 50) + 'vw';
+            
+            // Randomize width to look like a tail
+            shooter.style.width = (Math.random() * 80 + 30) + 'px';
+
+            document.body.appendChild(shooter);
+
+            // Remove element after animation finishes to keep DOM clean
+            setTimeout(() => {
+                shooter.remove();
+            }, 3000);
+        }
+
+        // Initialize stars
+        createGalaxy();
+
+        // Spawn a shooting star at random intervals (every 2-6 seconds)
+        (function loop() {
+            const rand = Math.round(Math.random() * 4000) + 2000;
+            setTimeout(() => {
+                spawnShootingStar();
+                loop();
+            }, rand);
+        }());
+    </script>
+</body>
+</html>
