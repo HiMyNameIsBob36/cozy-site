@@ -1,16 +1,16 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deep Space Monochrome</title>
+    <title>Diamond Skies</title>
     <style>
         body {
             margin: 0;
             padding: 0;
-            background-color: #000000; /* Pure black */
+            background-color: #000000;
             color: white;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'Segoe UI', sans-serif;
             height: 100vh;
             display: flex;
             justify-content: center;
@@ -21,97 +21,81 @@
         .content {
             z-index: 10;
             text-align: center;
-            letter-spacing: 3px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Standard Star */
+        /* The Diamond Star Shape */
         .star {
             position: absolute;
             background: white;
-            border-radius: 50%;
+            transform: rotate(45deg); /* Rotates square to diamond */
             pointer-events: none;
         }
 
-        /* Galaxy Cluster Star */
-        .galaxy-star {
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-            filter: blur(1px); /* Creates the "cloudy" galaxy look */
-            opacity: 0.4;
+        /* Special Glowing Stars */
+        .glow {
+            filter: drop-shadow(0 0 4px currentColor);
+            opacity: 1 !important; /* Make sure they are bright */
         }
 
-        /* High-Visibility Shooting Star */
+        /* Shooting Star */
         .shooting-star {
             position: absolute;
-            height: 3px; /* Thicker */
-            background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
+            height: 2px;
+            background: linear-gradient(90deg, white, transparent);
             transform: rotate(-35deg);
             pointer-events: none;
-            filter: drop-shadow(0 0 5px white); /* Makes it pop */
-            animation: shoot 1.5s ease-out forwards;
+            animation: shoot 2s linear forwards;
         }
 
         @keyframes shoot {
             0% { transform: translateX(0) translateY(0) rotate(-35deg) scaleX(0); opacity: 1; }
-            50% { transform: translateX(-400px) translateY(280px) rotate(-35deg) scaleX(1.5); opacity: 1; }
-            100% { transform: translateX(-800px) translateY(560px) rotate(-35deg) scaleX(2); opacity: 0; }
+            100% { transform: translateX(-1000px) translateY(700px) rotate(-35deg) scaleX(1); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
     <div class="content">
-        <h1>VOID</h1>
+        <h1>DIAMOND VOID</h1>
+        <p>Monochrome base with rare stellar glows.</p>
     </div>
 
     <script>
-        const body = document.body;
+        function createStars() {
+            const starCount = 150;
+            const body = document.body;
+            // A few rare colors
+            const rareColors = ['#00f2ff', '#ff007b', '#beff00', '#7000ff'];
 
-        function initSpace() {
-            // 1. Generate standard background stars
-            for (let i = 0; i < 150; i++) {
-                createStar('star', Math.random() * 2);
-            }
-
-            // 2. Generate 3 "Galaxies" (clusters)
-            for (let g = 0; g < 3; g++) {
-                createGalaxy();
-            }
-        }
-
-        function createStar(className, maxSize) {
-            const star = document.createElement('div');
-            star.className = className;
-            const size = Math.random() * maxSize + 'px';
-            star.style.width = size;
-            star.style.height = size;
-            star.style.top = Math.random() * 100 + 'vh';
-            star.style.left = Math.random() * 100 + 'vw';
-            star.style.opacity = Math.random();
-            body.appendChild(star);
-            return star;
-        }
-
-        function createGalaxy() {
-            // Pick a center point for the galaxy
-            const centerX = Math.random() * 100;
-            const centerY = Math.random() * 100;
-            
-            // Create 40 stars packed closely to the center
-            for (let i = 0; i < 40; i++) {
+            for (let i = 0; i < starCount; i++) {
                 const star = document.createElement('div');
-                star.className = 'galaxy-star';
+                star.className = 'star';
                 
-                // Randomize position around the center point
-                const offset = 10; 
-                star.style.top = (centerY + (Math.random() * offset - offset/2)) + 'vh';
-                star.style.left = (centerX + (Math.random() * offset - offset/2)) + 'vw';
-                
-                const size = Math.random() * 2 + 'px';
+                // Random size (2px to 5px looks better for diamonds)
+                const sizeValue = Math.random() * 3 + 2;
+                const size = sizeValue + 'px';
                 star.style.width = size;
                 star.style.height = size;
-                
+
+                // Random position
+                star.style.top = Math.random() * 100 + 'vh';
+                star.style.left = Math.random() * 100 + 'vw';
+
+                // Random slight opacity for depth
+                star.style.opacity = Math.random();
+
+                // Logic for "A FEW" colored glowing stars (approx 5% chance)
+                if (Math.random() > 0.95) {
+                    const color = rareColors[Math.floor(Math.random() * rareColors.length)];
+                    star.classList.add('glow');
+                    star.style.backgroundColor = color;
+                    star.style.color = color; // Used by currentColor in CSS
+                }
+
                 body.appendChild(star);
             }
         }
@@ -119,25 +103,20 @@
         function spawnShootingStar() {
             const shooter = document.createElement('div');
             shooter.className = 'shooting-star';
-            
-            shooter.style.top = Math.random() * 40 + 'vh';
-            shooter.style.left = (Math.random() * 40 + 60) + 'vw';
-            shooter.style.width = (Math.random() * 150 + 100) + 'px'; // Longer tail
-
-            body.appendChild(shooter);
-            setTimeout(() => shooter.remove(), 1500);
+            shooter.style.top = Math.random() * 50 + 'vh';
+            shooter.style.left = (Math.random() * 50 + 50) + 'vw';
+            shooter.style.width = (Math.random() * 100 + 150) + 'px';
+            document.body.appendChild(shooter);
+            setTimeout(() => shooter.remove(), 2000);
         }
 
-        initSpace();
-
-        // Shooting stars every 3-7 seconds
-        (function loop() {
-            const rand = Math.random() * 4000 + 3000;
-            setTimeout(() => {
-                spawnShootingStar();
-                loop();
-            }, rand);
-        }());
+        // Initialize
+        createStars();
+        
+        // Occasional shooting stars
+        setInterval(() => {
+            if(Math.random() > 0.7) spawnShootingStar();
+        }, 3000);
     </script>
 </body>
 </html>
