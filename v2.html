@@ -3,115 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Deep Void</title>
+    <title>Randomized Void</title>
     <style>
         body {
             margin: 0;
-            padding: 0;
-            background-color: #000000;
-            color: white;
-            font-family: 'Segoe UI', sans-serif;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background-color: #000;
             overflow: hidden;
+            height: 100vh;
+            width: 100vw;
         }
 
-        .content {
-            z-index: 10;
-            text-align: center;
-            pointer-events: none;
-        }
-
-        h1 { font-weight: 200; letter-spacing: 8px; opacity: 0.8; }
-
-        /* Base Star Style */
         .star {
             position: absolute;
             background: white;
+            border-radius: 50%;
             pointer-events: none;
         }
 
-        /* Shape 1: Standard Dot */
-        .dot { border-radius: 50%; }
-
-        /* Shape 2: Diamond */
-        .diamond { transform: rotate(45deg); }
-
-        /* Shape 3: Curved Diamond (Star-ish) */
-        .curved { 
-            transform: rotate(45deg); 
-            border-radius: 50% 0 50% 0; 
-        }
-
-        /* Rare Glowing Effect */
-        .glow {
-            filter: drop-shadow(0 0 6px currentColor);
-            opacity: 1 !important;
-            z-index: 2;
-        }
-
-        /* Shooting Star */
         .shooting-star {
             position: absolute;
             height: 2px;
-            background: linear-gradient(90deg, rgba(255,255,255,0.8), transparent);
-            transform: rotate(-35deg);
+            background: linear-gradient(90deg, #fff, transparent);
             pointer-events: none;
-            filter: drop-shadow(0 0 3px white);
-            animation: shoot 1.8s ease-out forwards;
+            /* Use CSS variables for random math */
+            transform: translate(0, 0) rotate(var(--angle));
+            opacity: 0;
+            animation: shoot var(--speed) linear forwards;
         }
 
         @keyframes shoot {
-            0% { transform: translateX(0) translateY(0) rotate(-35deg) scaleX(0); opacity: 1; }
-            100% { transform: translateX(-1200px) translateY(800px) rotate(-35deg) scaleX(2); opacity: 0; }
+            0% { 
+                transform: translate(0, 0) rotate(var(--angle)) scaleX(0); 
+                opacity: 1; 
+            }
+            100% { 
+                /* Moves the star 1000px forward based on its own rotation */
+                transform: translate(var(--translateX), var(--translateY)) rotate(var(--angle)) scaleX(1.5); 
+                opacity: 0; 
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="content">
-        <h1>CELESTIAL</h1>
-    </div>
-
     <script>
         function createStars() {
-            const starCount = 180;
+            const starCount = 150;
             const body = document.body;
-            
-            // Spacey, rare colors
-            const rareColors = ['#ff00ff', '#00d9ff', '#ff8c00', '#7b00ff', '#00ffaa'];
-            const shapes = ['dot', 'diamond', 'curved'];
 
             for (let i = 0; i < starCount; i++) {
                 const star = document.createElement('div');
+                star.className = 'star';
                 
-                // Assign a random shape
-                const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
-                star.className = `star ${randomShape}`;
-                
-                // Random size
-                const sizeValue = Math.random() * 3 + 1;
-                star.style.width = sizeValue + 'px';
-                star.style.height = sizeValue + 'px';
+                const size = Math.random() * 3 + 'px';
+                star.style.width = size;
+                star.style.height = size;
 
-                // Random position
                 star.style.top = Math.random() * 100 + 'vh';
                 star.style.left = Math.random() * 100 + 'vw';
-                star.style.opacity = Math.random() * 0.7 + 0.1;
-
-                // Rare colored stars (approx 3% chance)
-                if (Math.random() > 0.97) {
-                    const color = rareColors[Math.floor(Math.random() * rareColors.length)];
-                    star.classList.add('glow');
-                    star.style.backgroundColor = color;
-                    star.style.color = color; // For the drop-shadow
-                    star.style.width = (sizeValue + 1) + 'px'; // Slightly larger
-                    star.style.height = (sizeValue + 1) + 'px';
-                } else {
-                    star.style.backgroundColor = 'white';
-                }
+                star.style.opacity = Math.random();
 
                 body.appendChild(star);
             }
@@ -120,19 +70,44 @@
         function spawnShootingStar() {
             const shooter = document.createElement('div');
             shooter.className = 'shooting-star';
-            shooter.style.top = Math.random() * 40 + 'vh';
-            shooter.style.left = (Math.random() * 40 + 60) + 'vw';
-            shooter.style.width = (Math.random() * 150 + 150) + 'px';
+
+            // 1. Random Start Position
+            shooter.style.top = Math.random() * 100 + 'vh';
+            shooter.style.left = Math.random() * 100 + 'vw';
+
+            // 2. Random Angle (0 to 360 degrees)
+            const angle = Math.random() * 360;
+            
+            // 3. Random Speed (0.5s to 2s)
+            const speed = (Math.random() * 1.5 + 0.5) + 's';
+
+            // 4. Random Distance (how far it travels)
+            const distance = Math.random() * 400 + 400; // 400px to 800px
+            
+            // Calculate X and Y based on the angle
+            const tx = Math.cos(angle * Math.PI / 180) * distance;
+            const ty = Math.sin(angle * Math.PI / 180) * distance;
+
+            // Set variables for CSS to use
+            shooter.style.setProperty('--angle', `${angle}deg`);
+            shooter.style.setProperty('--translateX', `${tx}px`);
+            shooter.style.setProperty('--translateY', `${ty}px`);
+            shooter.style.setProperty('--speed', speed);
+            shooter.style.width = (Math.random() * 100 + 100) + 'px';
+
             document.body.appendChild(shooter);
-            setTimeout(() => shooter.remove(), 1800);
+
+            // Cleanup
+            setTimeout(() => shooter.remove(), 2000);
         }
 
+        // Initialize background stars
         createStars();
-        
-        // Randomize shooting star timing
+
+        // Spawn shooting stars randomly
         setInterval(() => {
-            if(Math.random() > 0.75) spawnShootingStar();
-        }, 4000);
+            if(Math.random() > 0.6) spawnShootingStar();
+        }, 2000);
     </script>
 </body>
 </html>
